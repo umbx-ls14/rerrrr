@@ -1,0 +1,8 @@
+{
+    "version": 2,
+    "routes": [
+      { "src": "/ip", "dest": "/api/ip.js" },
+      { "src": "/port", "dest": "/api/port.js" }
+    ]
+  }
+  
