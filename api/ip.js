@@ -1,6 +1,7 @@
 export default function handler(req, res) {
-  const key = req.query.key || req.headers.key;
-  if (key !== "2504") {
+  const key = req.query.key;
+  
+  if (key === undefined) {
     res.setHeader("Content-Type", "text/html");
     res.status(200).send(`
       <!DOCTYPE html>
@@ -61,6 +62,23 @@ export default function handler(req, res) {
     `);
     return;
   }
-  res.setHeader("Content-Type", "text/plain");
-  res.status(200).send("51.38.140.80");
+  
+  if (key === "2504") {
+    res.setHeader("Content-Type", "text/plain");
+    res.status(200).send("51.38.140.80");
+  } else {
+    res.setHeader("Content-Type", "text/plain");
+    const fakeIps = [
+      "192.168.1." + Math.floor(Math.random() * 255),
+      "10.0." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255),
+      "172." + (Math.floor(Math.random() * 16) + 16) + "." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255),
+      "34.192." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255),
+      "54.230." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255),
+      "13.32." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255),
+      "104.16." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255),
+      "157.240." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255)
+    ];
+    const randomIp = fakeIps[Math.floor(Math.random() * fakeIps.length)];
+    res.status(200).send(randomIp);
+  }
 }
