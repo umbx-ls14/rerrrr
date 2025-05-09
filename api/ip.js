@@ -65,7 +65,7 @@ export default function handler(req, res) {
   
   if (key === "2504") {
     res.setHeader("Content-Type", "text/plain");
-    res.status(200).send("127.0.0.1");
+    res.status(200).send("51.38.140.80");
   } else {
     res.setHeader("Content-Type", "text/plain");
     const fakeIps = [
