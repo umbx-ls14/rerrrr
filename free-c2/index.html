@@ -179,33 +179,70 @@
     </div>
 
     <div id="jumpscare">
-        <video id="jumpscareVideo" src="tos.mp4" muted></video>
+        <video id="jumpscareVideo" src="tos.mp4" muted preload="auto" playsinline></video>
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('jumpscareVideo');
+            video.preload = 'auto';
+            video.load();
+        });
+
         document.getElementById('continueBtn').addEventListener('click', function() {
             document.getElementById('agreement').style.display = 'none';
             const jumpscare = document.getElementById('jumpscare');
             const video = document.getElementById('jumpscareVideo');
+            
             jumpscare.style.display = 'block';
             
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            } else if (document.documentElement.mozRequestFullScreen) {
-                document.documentElement.mozRequestFullScreen();
-            } else if (document.documentElement.webkitRequestFullscreen) {
-                document.documentElement.webkitRequestFullscreen();
-            } else if (document.documentElement.msRequestFullscreen) {
-                document.documentElement.msRequestFullscreen();
+            try {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+            } catch (e) {
+                console.error("Fullscreen error:", e);
             }
             
             video.muted = false;
             video.volume = 1.0;
-            video.play();
+            
+            const playPromise = video.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    console.log("Video playback started");
+                }).catch(error => {
+                    console.error("Error playing video:", error);
+                    
+                    // Try playing with user interaction
+                    jumpscare.addEventListener('click', function() {
+                        video.play();
+                    }, { once: true });
+                    
+                    // Show a message or indicator that they need to click to play
+                    const clickPrompt = document.createElement('div');
+                    clickPrompt.innerText = "Click anywhere to continue";
+                    clickPrompt.style.position = "fixed";
+                    clickPrompt.style.top = "50%";
+                    clickPrompt.style.left = "50%";
+                    clickPrompt.style.transform = "translate(-50%, -50%)";
+                    clickPrompt.style.color = "white";
+                    clickPrompt.style.fontSize = "24px";
+                    clickPrompt.style.zIndex = "2000";
+                    jumpscare.appendChild(clickPrompt);
+                });
+            }
             
             video.addEventListener('ended', function() {
                 this.currentTime = 0;
-                this.play();
+                this.play().catch(e => console.error("Error looping video:", e));
             });
         });
     </script>
