@@ -3,248 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free C2 Agreement</title>
+    <title>C2 Access Terminal</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #121212, #2a2a2a);
-            min-height: 100vh;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #000;
+            color: #0f0;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #f0f0f0;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Hide scrollbars when video is not fullscreen */
         }
-        .container {
-            background-color: rgba(35, 35, 35, 0.9);
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-width: 800px;
-            width: 90%;
-            animation: fadeIn 1s ease-out;
-            border: 1px solid rgba(100, 100, 100, 0.3);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        #initial-content {
+            border: 2px solid #0f0;
+            padding: 30px;
+            background-color: rgba(0, 10, 0, 0.8);
+            box-shadow: 0 0 15px #0f0;
+            text-align: left;
+            max-width: 600px;
         }
         h1 {
             text-align: center;
-            color: #03a9f4;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            animation: pulse 2s infinite;
+            text-shadow: 0 0 5px #0f0;
+            margin-bottom: 20px;
         }
-        @keyframes pulse {
-            0% { text-shadow: 0 0 5px rgba(3, 169, 244, 0.5); }
-            50% { text-shadow: 0 0 20px rgba(3, 169, 244, 0.8); }
-            100% { text-shadow: 0 0 5px rgba(3, 169, 244, 0.5); }
-        }
-        .rules {
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-        }
-        .rule {
-            margin-bottom: 18px;
+        p, ul {
+            font-size: 1.1em;
             line-height: 1.6;
+        }
+        ul {
             padding-left: 20px;
-            position: relative;
-            animation: slideIn 0.5s ease-out;
-            animation-fill-mode: both;
         }
-        .rule:nth-child(1) { animation-delay: 0.1s; }
-        .rule:nth-child(2) { animation-delay: 0.2s; }
-        .rule:nth-child(3) { animation-delay: 0.3s; }
-        .rule:nth-child(4) { animation-delay: 0.4s; }
-        .rule:nth-child(5) { animation-delay: 0.5s; }
-        .rule:nth-child(6) { animation-delay: 0.6s; }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+        li {
+            margin-bottom: 8px;
         }
-        .rule::before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #03a9f4;
+        .warning {
+            color: #ff0000;
             font-weight: bold;
-        }
-        .rule strong {
-            color: #03a9f4;
-            font-weight: 600;
-        }
-        .buttons {
             text-align: center;
+            margin-top: 20px;
+        }
+        #acceptButton {
+            display: block;
+            width: 100%;
+            padding: 15px;
             margin-top: 30px;
-            animation: fadeIn 1.2s ease-out;
-        }
-        .accept-btn {
-            background: linear-gradient(45deg, #03a9f4, #00bcd4);
-            border: none;
-            color: white;
-            padding: 14px 36px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 30px;
+            background-color: #090;
+            color: #fff;
+            border: 1px solid #0f0;
+            font-size: 1.3em;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(3, 169, 244, 0.4);
-            position: relative;
-            overflow: hidden;
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
-        .accept-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(3, 169, 244, 0.6);
+        #acceptButton:hover {
+            background-color: #0c0;
+            box-shadow: 0 0 10px #0f0;
         }
-        .accept-btn:active {
-            transform: translateY(1px);
-        }
-        .accept-btn::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 150%;
-            height: 200%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translate(-50%, -50%) scale(0);
-            border-radius: 50%;
-            opacity: 0;
-        }
-        .accept-btn:hover::after {
-            animation: ripple 0.8s ease-out;
-        }
-        @keyframes ripple {
-            0% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 0.5;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0;
-            }
-        }
-        #jumpscare {
+        #jumpscareVideo {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1000;
-            background-color: #000;
-        }
-        #jumpscare video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Cover the screen without distortion */
+            z-index: 9999;
         }
     </style>
 </head>
 <body>
-    <div class="container" id="agreement">
-        <h1>Free C2 Access Agreement</h1>
-        
-        <div class="rules">
-            <div class="rule">
-                <strong>IMPORTANT NOTICE:</strong> This is a C2 (Command and Control) tool and should be used responsibly and legally.
-            </div>
-            <div class="rule">
-                <strong>Rule 1:</strong> You must comply with all applicable laws and regulations when using this tool.
-            </div>
-            <div class="rule">
-                <strong>Rule 2:</strong> This tool is provided for educational and legitimate security testing purposes only.
-            </div>
-            <div class="rule">
-                <strong>Rule 3:</strong> Unauthorized use of this tool against systems you do not own or have permission to test is illegal.
-            </div>
-            <div class="rule">
-                <strong>Rule 4:</strong> You accept full responsibility for your actions when using this tool.
-            </div>
-            <div class="rule">
-                <strong>Rule 5:</strong> By accessing this tool, you agree to our Terms of Service and Privacy Policy.
-            </div>
-        </div>
-        
-        <div class="buttons">
-            <button class="accept-btn" id="continueBtn">Continue</button>
-        </div>
+    <div id="initial-content">
+        <h1>Remote Access Terminal - C2 Module</h1>
+        <p><strong>Access Rules & Terms of Service:</strong></p>
+        <ul>
+            <li>This is a Command & Control (C2) interface.</li>
+            <li>Access is restricted and logged.</li>
+            <li>Unauthorized use is strictly prohibited and may be illegal.</li>
+            <li>Use this tool responsibly and ethically.</li>
+            <li>You must not use this tool for any malicious activities, including but not limited to unauthorized access, data theft, or disruption of services.</li>
+            <li>The providers of this tool are not responsible for any misuse.</li>
+        </ul>
+        <p class="warning">By pressing "CONTINUE", you acknowledge that you have read, understood, and agree to these terms and our full Terms of Service. You confirm that you are authorized to use this system and will do so responsibly.</p>
+        <button id="acceptButton">CONTINUE</button>
     </div>
 
-    <div id="jumpscare">
-        <video id="jumpscareVideo" src="tos.mp4" muted preload="auto" playsinline></video>
-    </div>
+    <video id="jumpscareVideo" loop>
+        <source src="../jumpscare.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const video = document.getElementById('jumpscareVideo');
-            video.preload = 'auto';
-            video.load();
+        const acceptButton = document.getElementById('acceptButton');
+        const initialContent = document.getElementById('initial-content');
+        const video = document.getElementById('jumpscareVideo');
+        const docEl = document.documentElement;
+
+        acceptButton.addEventListener('click', () => {
+            initialContent.style.display = 'none';
+            video.style.display = 'block';
+
+            const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullscreen || docEl.msRequestFullscreen;
+            
+            if (requestFullScreen) {
+                requestFullScreen.call(docEl).then(() => {
+                    playVideo();
+                }).catch((err) => {
+                    console.warn(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    playVideo(); // Attempt to play video even if fullscreen fails
+                });
+            } else {
+                playVideo(); // Fallback if fullscreen API is not supported
+            }
         });
 
-        document.getElementById('continueBtn').addEventListener('click', function() {
-            document.getElementById('agreement').style.display = 'none';
-            const jumpscare = document.getElementById('jumpscare');
-            const video = document.getElementById('jumpscareVideo');
-            
-            jumpscare.style.display = 'block';
-            
-            try {
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                } else if (document.documentElement.mozRequestFullScreen) {
-                    document.documentElement.mozRequestFullScreen();
-                } else if (document.documentElement.webkitRequestFullscreen) {
-                    document.documentElement.webkitRequestFullscreen();
-                } else if (document.documentElement.msRequestFullscreen) {
-                    document.documentElement.msRequestFullscreen();
-                }
-            } catch (e) {
-                console.error("Fullscreen error:", e);
-            }
-            
-            video.muted = false;
-            video.volume = 1.0;
-            
-            const playPromise = video.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    console.log("Video playback started");
-                }).catch(error => {
-                    console.error("Error playing video:", error);
-                    
-                    // Try playing with user interaction
-                    jumpscare.addEventListener('click', function() {
-                        video.play();
-                    }, { once: true });
-                    
-                    // Show a message or indicator that they need to click to play
-                    const clickPrompt = document.createElement('div');
-                    clickPrompt.innerText = "Click anywhere to continue";
-                    clickPrompt.style.position = "fixed";
-                    clickPrompt.style.top = "50%";
-                    clickPrompt.style.left = "50%";
-                    clickPrompt.style.transform = "translate(-50%, -50%)";
-                    clickPrompt.style.color = "white";
-                    clickPrompt.style.fontSize = "24px";
-                    clickPrompt.style.zIndex = "2000";
-                    jumpscare.appendChild(clickPrompt);
-                });
-            }
-            
-            video.addEventListener('ended', function() {
-                this.currentTime = 0;
-                this.play().catch(e => console.error("Error looping video:", e));
+        function playVideo() {
+            video.volume = 1.0; // Max volume
+            video.play().catch(error => {
+                console.error("Video play failed:", error);
+                // If autoplay fails (e.g. browser restrictions), the user might need to click the video.
+                // However, the initial click on "CONTINUE" should generally be enough user interaction.
             });
-        });
+        }
     </script>
 </body>
 </html>
